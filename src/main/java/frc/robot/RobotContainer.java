@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.controller.DifferentialDriveWheelVoltages;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -23,40 +25,44 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
+
     private final Drive drive;
+
     private final CommandXboxController controller = new CommandXboxController(0);
 
     public RobotContainer() {
-        switch (Constants.currentMode) {
-            case real -> {
-                // Real robot, instantiate hardware IO implementations
+        switch(Constants.currentMode) {
+            case REAL -> {
                 drive = new Drive(
-                        new GyroIOPigeon2(),
-                        new ModuleIOSpark(0),
-                        new ModuleIOSpark(1),
-                        new ModuleIOSpark(2),
-                        new ModuleIOSpark(3));
+                    new GyroIOPigeon2(),
+                    new ModuleIOSpark(0),
+                    new ModuleIOSpark(1),
+                    new ModuleIOSpark(2),
+                    new ModuleIOSpark(3));
+            }
 
-            }:
+            default -> {
+                drive = new Drive(
+                    new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {});
+            }
         }
+    }
 
     private void configureButtonBindings() {
-            // Default command, normal field-relative drive
         drive.setDefaultCommand(DriveCommands.joystickDrive(drive, () -> -controller.getLeftY(), () -> -controller.getLeftX(), () -> -controller.getRightX()));
 
-            // Lock to 0° when A button is held
-        controller.a().whileTrue(DriveCommands.joystickDriveAtAngle(drive, () -> -controller.getLeftY(), () -> -controller.getLeftX(), Rotation2d::new));
-    
-            // Switch to X pattern when X button is pressed
-        controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        // controller.a().whileTrue(DriveCommands.joystickDrive(drive, () -> -controller.getLeftY(), () -> -controller.getLeftX(),()->{return 0.0;}));
+
+        controller.x().onTrue(Commands.runOnce(drive::StopWithX, drive));
     }
-    
+
     public Pose2d getPose() {
         return drive.getPose();
     }
-    
+
     public void resetPose(Pose2d pose) {
         drive.resetOdometry(pose);
     }
-    }
 }
+
+    
