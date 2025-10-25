@@ -21,6 +21,8 @@ public class DriveConstants {
   public static final int BACKLEFT_TURNMOTOR_CANID = 7;
   public static final int BACKRIGHT_TURNMOTOR_CANID = 8;
 
+  public static final int PIGEON_CAN_ID = 9;
+
   public static final double maxSpeed =
       1.0; // meters per second, max # of meters it can move in a second
   public static final double maxAccel = 1.0; // max acceleration, rate it can speed up

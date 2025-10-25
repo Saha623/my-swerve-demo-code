@@ -36,7 +36,6 @@ public class Module {
             AlertType.kError); // Sends an error message if a turning motor disconnects
   }
 
-  @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
@@ -49,10 +48,7 @@ public class Module {
           inputs.odometryDrivePositionsRad[i]
               * wheelRadius; // Gets the position of the robot every time it updates
       Rotation2d angle =
-          new Rotation2d(
-              inputs
-                  .odometryTurnPositionsRad[
-                  i]); // Gets the angle of the robot every time it updates
+              inputs.odometryTurnPositions[i]; // Gets the angle of the robot every time it updates
       odometryPositions[i] =
           new SwerveModulePosition(
               positionMeters,
@@ -84,7 +80,7 @@ public class Module {
   }
 
   public Rotation2d getAngle() {
-    return inputs.turnPosition();
+    return inputs.turnPosition;
   }
 
   public double getPositionMeters() {
