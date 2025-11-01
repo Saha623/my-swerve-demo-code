@@ -104,9 +104,9 @@ public class Drive extends SubsystemBase {
       local());
       Pathfinding.setPathfinder(new LocalADStarAK());
       PathPlannerLogging.setLogActivePathCallback(
-        activePath -> Logger.recordOutput("Odometry/Trajectory", activePath.toArray(Pose2d[]::new)));
+              activePath -> Logger.recordOutput("Odometry/Trajectory", activePath.toArray(Pose2d[]::new)));
       PathPlannerLogging.setLogTargetPoseCallback(
-        targetPose -> Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose));
+              targetPose -> Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose));
       PathfindingCommand.warmupCommand().schedule();
 
       sysId = new SysIdRoutine(

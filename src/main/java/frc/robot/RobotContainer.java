@@ -30,6 +30,8 @@ public class RobotContainer {
 
     private final CommandXboxController controller = new CommandXboxController(0);
 
+    private final LoggedDashboardChooser<Command> autoChooser;
+
     public RobotContainer() {
         switch(Constants.currentMode) {
             case REAL -> {
@@ -46,6 +48,27 @@ public class RobotContainer {
                     new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {});
             }
         }
+
+        autoChooser = new LoggedDashboardChooser<>(
+                "Auto Choices",
+                AutoBuilder.buildAutoChooserWithOptionsModifier(stream -> Boolean.TRUE.equals(Constants.ISCOMPETITION)
+                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                        : stream));
+
+        if (!Constants.ISCOMPETITION) {  // ORIG: Boolean.FALSE.equals(Constants.competition) {
+            // Set up SysId routines
+            autoChooser.addOption(
+                    "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+            autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.FeedForwardCharacterization(drive));
+            autoChooser.addOption(
+                    "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+            autoChooser.addOption(
+                    "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+            autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+            autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        }
+
+        configureButtonBindings();  // Synax error?
     }
 
     private void configureButtonBindings() {
@@ -62,6 +85,10 @@ public class RobotContainer {
 
     public void resetPose(Pose2d pose) {
         drive.resetOdometry(pose);
+    }
+
+    public Command getAutonomousCommand() {
+        return autoChooser.get();
     }
 }
 
