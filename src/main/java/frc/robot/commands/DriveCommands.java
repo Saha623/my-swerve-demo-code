@@ -208,6 +208,26 @@ public class DriveCommands {
     private double gyroDelta = 0.0;
   }
 
+  public static Command RobotOrientedDrive(
+    Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
+      return Commands.run(
+        () -> {
+          Translation2d linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), deadband);
+
+          omega = Math.copySign(omega * omega, omega);
+
+          ChassisSpeeds speeds = new ChassisSpeeds(
+            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+            omega * drive.getMaxAngularSpeedRadPerSec());
+          
+            drive.runVelocity(speeds);
+        },
+        drive);
+    }
+
   // Called when the command is initially scheduled.
   public void initialize() {}
 

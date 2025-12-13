@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.drive;
 
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.ModuleConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -24,9 +27,9 @@ public class DriveConstants {
   public static final int PIGEON_CAN_ID = 9;
 
   public static final double maxSpeed =
-      1.0; // meters per second, max # of meters it can move in a second
-  public static final double maxAccel = 1.0; // max acceleration, rate it can speed up
-  public static final double odometryFrequency = 1.0; // hertz, rate in which we update odometry
+      0.5; // meters per second, max # of meters it can move in a second
+  public static final double maxAccel = 0.5; // max acceleration, rate it can speed up
+  public static final double odometryFrequency = 100.0; // hertz, rate in which we update odometry
   public static final double trackWidth =
       Units.inchesToMeters(27); // width of the track, or the drive-base
   public static final double trackLength =
@@ -42,10 +45,10 @@ public class DriveConstants {
       };
 
   public static final Rotation2d FrontLeftZeroRotation =
-      Rotation2d.fromDegrees(0.0); // zeroes the rotation of the motors
+      Rotation2d.fromDegrees(-90.0); // zeroes the rotation of the motors
   public static final Rotation2d FrontRightZeroRotation = Rotation2d.fromDegrees(0.0);
-  public static final Rotation2d BackLeftZeroRotation = Rotation2d.fromDegrees(0.0);
-  public static final Rotation2d BackRightZeroRotation = Rotation2d.fromDegrees(0.0);
+  public static final Rotation2d BackLeftZeroRotation = Rotation2d.fromDegrees(180.0);
+  public static final Rotation2d BackRightZeroRotation = Rotation2d.fromDegrees(90.0);
 
   public static final int driveCurrentLimit = 30; // current limit for driving motors
   public static final double wheelRadius = Units.inchesToMeters(1.5);
@@ -58,10 +61,10 @@ public class DriveConstants {
   public static final double driveVelocityFactor =
       2 * Math.PI / 60.0 / driveReduction; // Rotor RPM -> Wheel radians/second
 
-  public static final double DRIVE_KP = 0.0; // PID configurations
-  public static final double DRIVE_KD = 0.0;
-  public static final double DRIVE_KS = 0.0;
-  public static final double DRIVE_KV = 0.0;
+  public static final double DRIVE_KP = 0.01; // PID configurations
+  public static final double DRIVE_KD = 0.002;
+  public static final double DRIVE_KS = 0.06;
+  public static final double DRIVE_KV = 0.1;
 
   public static final boolean turnInverted = false; // if the turning motors are inverted
   public static final int turnCurrentLimit = 20; // current limit for turning motors
@@ -77,4 +80,17 @@ public class DriveConstants {
   public static final double TURN_KD = 0.0;
   public static final double turnMinInput = 0.0; // Both of the Max and Min inputs are in radians
   public static final double turnMaxInput = 2 * Math.PI;
+
+  public static final double robotMASS = Units.lbsToKilograms(70.0);
+  public static final double robotMOI = 6.883;  // units??
+  public static final double wheelCOF = 1;  // standing friction
+  public static final RobotConfig ppConfig = new RobotConfig(robotMASS, robotMOI, 
+  new ModuleConfig(
+    wheelRadius,
+    maxSpeed,
+    wheelCOF,
+    DRIVE_GEARBOX.withReduction(driveReduction),
+    driveCurrentLimit,
+    1), 
+    moduleTranslations);
 }

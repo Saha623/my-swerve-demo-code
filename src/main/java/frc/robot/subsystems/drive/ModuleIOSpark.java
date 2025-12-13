@@ -27,6 +27,7 @@ import static frc.robot.subsystems.drive.DriveConstants.drivePositionFactor;
 import static frc.robot.subsystems.drive.DriveConstants.driveVelocityFactor;
 import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
 import static frc.robot.subsystems.drive.DriveConstants.turnCurrentLimit;
+import static frc.robot.subsystems.drive.DriveConstants.turnEncoderInverted;
 import static frc.robot.subsystems.drive.DriveConstants.turnInverted;
 import static frc.robot.subsystems.drive.DriveConstants.turnMaxInput;
 import static frc.robot.subsystems.drive.DriveConstants.turnMinInput;
@@ -161,7 +162,7 @@ public class ModuleIOSpark implements ModuleIO {
         .voltageCompensation(12.0);
     turnConfig
         .absoluteEncoder
-        .inverted(turnInverted)
+        .inverted(turnEncoderInverted)
         .positionConversionFactor(turnPositionFactor)
         .velocityConversionFactor(turnVelocityFactor)
         .averageDepth(2);
